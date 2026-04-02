@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Isolation Pipeline</title>
+  <meta name="description" content="Audio-visual voice isolation using Conv-TasNet source separation and MediaPipe lip tracking">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="hdr-left">
+      <div class="hdr-tag"><span class="dot"></span> Neural Visual-Audio Fusion Lab</div>
+      <h1>VOICE ISOLATION <em>PIPELINE</em></h1>
+    </div>
+    <div class="hdr-badge">Conv-TasNet + MediaPipe</div>
+  </header>
+
+  <div class="steps" id="stepTracker">
+    <div class="step done" id="st0"><span class="step-n">①</span>Upload</div>
+    <div class="step" id="st1"><span class="step-n">②</span>Mix Audio</div>
+    <div class="step" id="st2"><span class="step-n">③</span>Separate</div>
+    <div class="step" id="st3"><span class="step-n">④</span>Lip Track</div>
+    <div class="step" id="st4"><span class="step-n">⑤</span>Correlate</div>
+    <div class="step" id="st5"><span class="step-n">⑥</span>Results</div>
+  </div>
+
+  <div class="up-grid">
+    <div class="drop-zone" id="dz1">
+      <input type="file" accept="video/mp4,video/*" id="file1">
+      <span class="dz-icon">🎬</span>
+      <div class="dz-title">Video 1: Target Speaker</div>
+      <div class="dz-sub">Upload the person you want to isolate</div>
+      <div class="dz-file hidden" id="f1name"></div>
+    </div>
+    <div class="drop-zone" id="dz2">
+      <input type="file" accept="video/mp4,video/*" id="file2">
+      <span class="dz-icon">🎬</span>
+      <div class="dz-title">Video 2: Other Speaker</div>
+      <div class="dz-sub">The second speaker or background noise</div>
+      <div class="dz-file hidden" id="f2name"></div>
+    </div>
+  </div>
+
+  <div class="run-area">
+    <button id="runBtn" disabled>RUN PIPELINE</button>
+  </div>
+
+  <div class="prog-wrap hidden" id="progWrap">
+    <div class="prog-label">
+      <span id="progStep">Processing...</span>
+      <span id="progPct">0%</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+  </div>
+
+  <div class="terminal-wrap hidden" id="termWrap">
+    <div class="terminal-title">
+      <div class="t-dot"></div>
+      PIPELINE LOG
+    </div>
+    <div class="terminal-body" id="termBody"></div>
+  </div>
+
+  <div class="alert err hidden" id="errAlert">
+    <div class="alert-icon">✗</div>
+    <div id="errMsg"></div>
+  </div>
+
+  <div id="results" class="hidden">
+    <div class="results-header">Isolation Complete</div>
+
+    <div id="methodNote" class="method-note hidden"></div>
+
+    <div id="corrCompare" class="corr-compare hidden">
+      <div class="corr-label">Correlation Comparison</div>
+      <div class="corr-bars">
+        <div class="corr-bar-row">
+          <span class="corr-bar-name">Track 1</span>
+          <div class="corr-bar-track"><div class="corr-bar-fill winner-bar" id="corrBar1"></div></div>
+          <span class="corr-bar-val" id="corrVal1"></span>
+        </div>
+        <div class="corr-bar-row">
+          <span class="corr-bar-name">Track 2</span>
+          <div class="corr-bar-track"><div class="corr-bar-fill loser-bar" id="corrBar2"></div></div>
+          <span class="corr-bar-val" id="corrVal2"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lip-section hidden" id="lipSection">
+      <div class="lip-label">Lip Movement Analysis</div>
+      <div class="lip-img-wrap">
+        <img id="lipImg" src="" alt="Lip Movement Graph">
+      </div>
+    </div>
+
+    <div class="audio-grid" id="audioGrid"></div>
+
+    <details class="how-it-works">
+      <summary>How does this work?</summary>
+      <div class="how-body">
+        <p>This system solves the <strong>Cocktail Party Problem</strong>: isolating a single voice from a mix of overlapping speakers.</p>
+        <ol>
+          <li><strong>Mix:</strong> Audio from both videos is blended into a single noisy signal.</li>
+          <li><strong>Separate:</strong> A neural network (Conv-TasNet) splits the mix into two isolated voice tracks.</li>
+          <li><strong>Track lips:</strong> MediaPipe detects facial landmarks in the target video and measures lip movement over time.</li>
+          <li><strong>Match:</strong> The system compares each separated track's vocal energy rhythm against the lip movement pattern. The track with the highest correlation is identified as the target speaker.</li>
+        </ol>
+      </div>
+    </details>
+  </div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

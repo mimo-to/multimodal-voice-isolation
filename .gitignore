@@ -1,9 +1,33 @@
-@'
 __pycache__/
 *.py[cod]
-cocktail_env/
+*.pyo
+
+# environments
 venv/
-raw_videos/
+cocktail_env/
+.env
+
+# model weights and large assets
+pretrained_models/*
+!pretrained_models/.gitkeep
+face_landmarker.task
+
+# user data
+uploads/*
+!uploads/.gitkeep
 outputs/*.wav
-temp_*.wav
-'@ | Out-File -FilePath .gitignore -Encoding utf8
+outputs/*.png
+outputs/*.jpg
+!outputs/.gitkeep
+raw_videos/*
+!raw_videos/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.swp
